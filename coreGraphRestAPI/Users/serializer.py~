@@ -1,0 +1,42 @@
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
+from rest_framework.reverse import reverse
+from .models import UserProfile, UserAddress, ImageUpload
+
+User = get_user_model()
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (User.USERNAME_FIELD, 'first_name','last_name','is_active')
+
+
+class ImageUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('image',)
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only = False)
+    profile_picture = ImageUploadSerializer(read_only = False)
+    class Meta:
+        model = UserProfile
+        fields = ('user','profile_picture','dob','phone','country_code')
+
+
+class UserAddressSerializer(serializers.ModelSerializer):
+    user_profile = UserProfileSerializer(read_only = False)
+    links = serializers.SerializerMethodField('get_links')
+
+    class Meta:
+        model = UserAddress
+        fields = ('user_profile','street','city','state','country','is_default','links')
+
+    def get_links(self, obj):
+        request = self.context['request']
+        username = obj.get_username()
+
+        return {
+            'self': reverse('user-detail',
+            kwargs = {User.USERNAME_FIELD: username}, request=request)
+                }
