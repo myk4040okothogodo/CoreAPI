@@ -45,12 +45,12 @@ class ProductSerializer(WritableNestedModelSerializer, serializers.ModelSerializ
         links = {
                 'self': reverse('product-detail',
                 kwargs = {'pk': obj.pk}, request=request),
-                'businesses': None,
+                'business': None,
                 }
 
         if obj.business:
-            links['businesses'] = reverse('business-detail',
-                kwargs = {'pk': obj.business_id}, request=request)        
+            links['business'] = reverse('business-detail',
+                kwargs = {'pk': obj.business}, request=request)        
         return links
 
 

@@ -3,17 +3,20 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password, **extra_fields):
+    def create_user(self, username, email, password, **extra_fields):
+        if not username :
+            raise ValueError('Username is required')
         if not email:
             raise ValueError("Email is required")
 
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
+        
         return user
 
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self,username, email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -26,7 +29,7 @@ class UserManager(BaseUserManager):
         if not extra_fields.get("is_superuser", False):
             raise ValueError('Superuser must have is_staff=True.')
 
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(username, email, password, **extra_fields)
 
 
 
@@ -70,6 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=100, default="yourfirstname")
     last_name = models.CharField(max_length=100, default="yourlastname")
+    username = models.CharField(db_index=True, max_length=255, unique=True)
     user_address = models.OneToOneField(UserAddress, related_name="user_address",blank=True, null=True, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -77,7 +81,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ['email','first_name','last_name']
     objects = UserManager()
 
     def __str__(self):
@@ -86,9 +91,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         super().full_clean()
         super().save(*args, **kwargs)
-
-
-
-
-
 

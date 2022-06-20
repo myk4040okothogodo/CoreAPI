@@ -10,6 +10,7 @@ from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, Token
 
 User = get_user_model()
 
+
 class DefaultsMixin(object):
     """Default settings for view authentication, permissions, filtering and pagination."""
     authentication_classes = (

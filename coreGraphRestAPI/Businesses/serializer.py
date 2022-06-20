@@ -8,9 +8,6 @@ from drf_writable_nested import WritableNestedModelSerializer
 User = get_user_model()
 
 
-
-
-
 class BusinessCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusinessComment
@@ -47,5 +44,10 @@ class BusinessSerializer(WritableNestedModelSerializer, serializers.ModelSeriali
                 'self': reverse('business-detail',
                 kwargs = {'pk': obj.pk}, request=request),
                 'products': None,
+                'owner': None,
                 }
+
+        if obj.owner_id:
+            links['owner'] = reverse('user-detail',
+            kwargs = {User.USERNAME_FIELD: obj.owner_id}, request=request)
         return links

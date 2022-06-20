@@ -37,7 +37,7 @@ class UserSerializer(WritableNestedModelSerializer, serializers.ModelSerializer)
     
     class Meta:
         model = User
-        fields = ('id', User.USERNAME_FIELD,'password','first_name','last_name','user_address','is_active','links')
+        fields = ('id', User.USERNAME_FIELD,'email','password','first_name','last_name','user_address','is_active','links')
 
 
     def get_links(self, obj):
@@ -45,8 +45,8 @@ class UserSerializer(WritableNestedModelSerializer, serializers.ModelSerializer)
         username = obj.get_username()
 
         return {
-                #'self': reverse('user-detail',
-                #kwargs = {User.USERNAME_FIELD: username}, request=request),
+                'self': reverse('user-detail',
+                kwargs = {User.USERNAME_FIELD: username}, request=request),
                 }
 
     

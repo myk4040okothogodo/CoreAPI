@@ -1,5 +1,6 @@
 from django.db import models
-from user_controller.models import ImageUpload
+from coreGraphRestAPI.Users.models import ImageUpload
+from coreGraphRestAPI.Businesses.models import Business
 from django.contrib.auth import get_user_model
 
 
@@ -14,7 +15,7 @@ class Category(models.Model):
 
 
 class ProductImage(models.Model):
-    image = models.ForeignKey(ImageUpload, related_name="image_product", on_delete=models.CASCADE)
+    image = models.ForeignKey(ImageUpload, related_name="product_image", on_delete=models.CASCADE)
     is_cover = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
@@ -24,7 +25,7 @@ class ProductImage(models.Model):
 
 
 class ProductComment(models.Model):
-    user = models.ForeignKey(User, related_name="user_comments", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="user_comments_on_product", on_delete=models.CASCADE)
     comment = models.TextField()
     rate = models.IntegerField(default=3)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -34,7 +35,7 @@ class ProductComment(models.Model):
 
 class Product(models.Model):
     category = models.ForeignKey(Category, related_name="product_categories", on_delete=models.CASCADE)
-    business = models.ForeignKey(Business, related_name="business_products", on_delete=models.CASCADE)
+    business = models.ForeignKey(Business, related_name="belongs_to_business", on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     price = models.FloatField()
     total_available = models.PositiveIntegerField()

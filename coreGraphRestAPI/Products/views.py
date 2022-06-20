@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import authentication, permissions, viewsets, filters
 from .serializer import ProductSerializer
 from .models import Product
+from .forms import ProductFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
@@ -27,9 +28,10 @@ class DefaultsMixin(object):
 
 
 class ProductViewSet(DefaultsMixin, viewsets.ModelViewSet):
-    """API endpoint for listing users."""
+    """API endpoint for listing Products."""
     
-    lookup_field = Product.name
-    lookup_url_kwarg = Product.name
-    queryset = Product.objects.order_by(Product.name) 
+    queryset = Product.objects.order_by('name',) 
     serializer_class = ProductSerializer   
+    filter_class = ProductFilter
+    search_fields = ('name','price','business')
+    ordering_fields = ('price','name','total_available')

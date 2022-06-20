@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import authentication, permissions, viewsets, filters
 from .serializer import CartSerializer
 from .models import Cart
+from .forms import CartFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
@@ -27,9 +28,10 @@ class DefaultsMixin(object):
 
 
 class CartViewSet(DefaultsMixin, viewsets.ModelViewSet):
-    """API endpoint for listing users."""
+    """API endpoint for listing Carts."""
     
-    lookup_field = Cart.product.name
-    lookup_url_kwarg = Cart.product.name
-    queryset = Cart.objects.order_by(Cart.created_at) 
+    queryset = Cart.objects.order_by('created_at') 
     serializer_class = CartSerializer 
+    filter_class = CartFilter
+    search_fields = ('created_at','user','quantity','product')
+    ordering_fields = ('created_at','quantity','user')

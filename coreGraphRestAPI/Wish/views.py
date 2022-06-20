@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import authentication, permissions, viewsets, filters
 from .serializer import WishSerializer
 from .models import Wish
+from .forms import WishFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
@@ -27,9 +28,9 @@ class DefaultsMixin(object):
 
 
 class WishViewSet(DefaultsMixin, viewsets.ModelViewSet):
-    """API endpoint for listing users."""
-    
-    lookup_field = Wish.product.name
-    lookup_url_kwarg = Wish.product.name
-    queryset = Wish.objects.order_by(Wish.created_at) 
+    """API endpoint for listing Wishes."""
+    queryset = Wish.objects.order_by('created_at') 
     serializer_class = WishSerializer 
+    filter_class = WishFilter
+    search_fields = ('created_at','user','products')
+    ordering_fields = ('created_at','user')

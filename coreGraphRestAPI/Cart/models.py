@@ -1,5 +1,9 @@
 from django.db import models
+from coreGraphRestAPI.Products.models import Product
+from django.contrib.auth import get_user_model
 
+
+User = get_user_model()
 
 class Cart(models.Model):
     product = models.ForeignKey(Product, related_name="product_carts", on_delete=models.CASCADE)

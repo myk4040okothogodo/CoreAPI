@@ -1,5 +1,5 @@
 from django.db import models
-from user_controller.models import ImageUpload
+from coreGraphRestAPI.Users.models import ImageUpload
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -16,7 +16,7 @@ class BusinessImage(models.Model):
 
 
 class BusinessComment(models.Model):
-    user = models.ForeignKey(User, related_name="user_comments", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="user_comments_on_business", on_delete=models.CASCADE)
     comment = models.TextField()
     rate = models.IntegerField(default=3)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -37,7 +37,7 @@ class BusinessAddress(models.Model):
 
 
 class Business(models.Model):
-    owner = models.OneToOneField(User, related_name="user_business", on_delete=models.CASCADE)
+    owner = models.OneToOneField(User, related_name="business_owner", on_delete=models.CASCADE)
     name = models.CharField(max_length=100, unique=True)
     business_address = models.ForeignKey(BusinessAddress, related_name="business_address", on_delete=models.CASCADE)
     business_comments = models.ForeignKey(BusinessComment, related_name="business_comments", on_delete=models.CASCADE)

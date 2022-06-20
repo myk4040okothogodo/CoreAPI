@@ -3,4 +3,5 @@ from django.apps import AppConfig
 
 class WishConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'Wish'
+    name = 'coreGraphRestAPI.Wish'
+    label= 'coreGraphRestAPI_Wish'
